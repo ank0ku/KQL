@@ -1,0 +1,5 @@
+EmailEvents
+| where TimeGenerated > ago(30d)
+| where DeliveryLocation == "Quarantine"
+| summarize count() by SenderFromDomain
+| sort by count_
