@@ -1,0 +1,5 @@
+EmailEvents
+| where ThreatTypes has_any ("Phish", "Spam", "Malware")
+| where LatestDeliveryLocation == "Quarantine"
+| summarize Count = count() by SenderIPv4, SenderFromAddress, SenderFromDomain
+| top 100 by Count
