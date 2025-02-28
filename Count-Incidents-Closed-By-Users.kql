@@ -1,0 +1,10 @@
+// This query shows incidents closed by non-machine users and counts by Title
+SecurityIncident
+| where Status == 'Closed'
+| extend Owner1 = parse_json(Owner)
+| extend UPN = Owner1.userPrincipalName
+| extend AssignedTo = Owner1.assignedTo
+| where UPN !=  ""
+| project Title, UPN, AssignedTo, ModifiedBy
+// Comment out the below line if you want to see all events
+| summarize Count=count() by Title
