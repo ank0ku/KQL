@@ -1,0 +1,7 @@
+// Executables downloaded by browser
+DeviceFileEvents
+| where ActionType == "FileRenamed" or ActionType == "FileCreated" // The FileRenamed action occurs when an incomplete download completes and changes the name from Unconfirmed*.crdownload to the actual filename.
+| where FileName endswith ".exe"
+| where InitiatingProcessFileName in ("chrome.exe", "msedge.exe", "firefox.exe", "opera.exe")
+| project Timestamp, FileName, FolderPath, InitiatingProcessFileName, InitiatingProcessCommandLine, DeviceName
+| order by Timestamp desc
