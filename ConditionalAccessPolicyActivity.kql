@@ -1,0 +1,12 @@
+// Shows conditional access policy administrative activity
+AuditLogs
+| where OperationName endswith "conditional access policy"
+| extend Initiator = parse_json(InitiatedBy)
+| extend Target = parse_json(TargetResources)[0]
+| project
+TimeGenerated,
+OperationName,
+InitiatorName = tostring(Initiator.user.userPrincipalName),
+InitiatorId = tostring(Initiator.user.id),
+TargetPolicy = tostring(Target.displayName),
+TargetId = tostring(Target.id)
