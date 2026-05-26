@@ -1,0 +1,9 @@
+// This can be used as a Custom Detection Rule in Defender to detect Azure Lock activity and alert off of that. It also excludes Azure Backup Service because a lock is applied when Azure Backup for Azure File Shares is configured
+AzureActivity
+| where OperationNameValue in ("MICROSOFT.AUTHORIZATION/LOCKS/WRITE", "MICROSOFT.AUTHORIZATION/LOCKS/DELETE")
+| where ActivityStatusValue == "Success"
+| where not(Properties has "AzureBackupProtectionLock") // Exclusion Filter: Stops Azure Backup Service from triggering the rule
+| extend Properties_entity = parse_json(Properties)["entity"]
+| extend Properties_message = parse_json(Properties)["message"]
+| extend Properties_resource = parse_json(Properties)["resource"]
+| project TimeGenerated,OperationNameValue,Caller,ActivityStatusValue,Properties_message,Properties_resource,Properties_entity
